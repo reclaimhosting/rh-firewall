@@ -1,0 +1,14 @@
+[Unit]
+Description=Reclaim Hosting Firewall
+After=network.target,csf.service,lfd.service,ufw.service,bitninja.service,wazuh-agent.service
+
+[Service]
+Type=simple
+User=root
+WorkingDirectory=/opt/rh-firewall
+ExecStart=/usr/bin/bash /opt/rh-firewall/rh-firewall.sh
+Restart=on-failure
+RestartSec=5s
+
+[Install]
+WantedBy=multi-user.target
