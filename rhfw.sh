@@ -37,8 +37,8 @@ IPTABLES_OR_NFTABLES="iptables"
 if [[ $( /usr/bin/which nft 1>/dev/null && /usr/bin/echo "TRUE" || /usr/bin/echo "FALSE" ) == *"TRUE"* ]]; then
 	# But use `nftables` if it's installed
 	IPTABLES_OR_NFTABLES="nftables"
-	# Unless `nftables` is being managed via `iptables-nft`, then back to `iptables`
-	if [[ $( /usr/sbin/iptables -V | /usr/bin/grep -q "nf_tables" && /usr/bin/echo "TRUE" || /usr/bin/echo "FALSE" ) == *"TRUE"* ]]; then
+	# Unless `nftables` is being managed via `iptables-nft` (or `iptables-legacy` is in use over `nft`), then back to `iptables`
+	if [[ $( /usr/sbin/iptables -V | /usr/bin/grep -qP "nf_tables" && /usr/bin/echo "TRUE" || /usr/bin/echo "FALSE" ) == *"TRUE"* || $( /usr/bin/readlink /etc/alternatives/iptables | /usr/bin/grep -qP "(iptables\-nft|iptables\-legacy)" && /usr/bin/echo "TRUE" || /usr/bin/echo "FALSE" ) == *"TRUE"* ]]; then
 		IPTABLES_OR_NFTABLES="iptables"
 		# But if the '/opt/rh-firewall/rhfwnft.flag' file exists, then use `nftables` directly
 		if [[ -f /opt/rh-firewall/rhfwnft.flag ]]; then
